@@ -1,4 +1,4 @@
-def get_prompt():
+def get_extraction_prompt():
     """Return the prompt text for quiz extraction"""
     return """You are an expert at converting multiple choice questions (MCQs) from images into JSON format. You have special expertise in detecting and preserving mathematical expressions, chemical equations, and complex notations exactly as they appear. For each image:
 
