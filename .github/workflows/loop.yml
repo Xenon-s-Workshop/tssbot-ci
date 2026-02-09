@@ -1,4 +1,4 @@
-name: CI for QuizBots
+name: CI for PDF MCQ Extractor Bot
 
 on:
   push:
@@ -12,58 +12,59 @@ env:
   ACTIONS_STEP_DEBUG: true
 
 jobs:
-  quizbot:
-    name: Atlae Bot
+  mcq-extractor-bot:
+    name: PDF MCQ Extractor Bot
     runs-on: ubuntu-latest
     steps:
-      - name: Clone The ATLAS Bot Repo
-        run: git clone https://${{ env.username }}:${{ secrets.GH_TOKEN }}@github.com/${{ secrets.ATLAS }} atlas
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
+          python-version: '3.11'
         timeout-minutes: 5
         continue-on-error: false
 
-      - name: Install project dependencies and run TSS Bot
+      - name: Install system dependencies
         run: |
-          cd atlas
-          sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
-          echo "deb http://archive.ubuntu.com/ubuntu jammy main universe" | sudo tee /etc/apt/sources.list
-          echo "deb http://security.ubuntu.com/ubuntu jammy-security main universe" | sudo tee -a /etc/apt/sources.list
-          sudo apt update
-          sudo apt --fix-broken install -y
-          sudo apt-get install -y --fix-missing poppler-data libpoppler-dev poppler-utils
-          sudo apt-get install -y libpango-1.0-0 libpangoft2-1.0-0
-          pip install playwright
-          playwright install
-          playwright install chromium
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+          sudo apt-get install -y libpoppler-cpp-dev
+        timeout-minutes: 10
+
+      - name: Install Python dependencies
+        run: |
+          pip install --upgrade pip
           pip install -r requirements.txt
-          pip install --upgrade pymongo[srv] certifi
+        timeout-minutes: 10
+
+      - name: Run PDF MCQ Extractor Bot
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TG_TOKEN }}
+          GEMINI_API_KEYS: ${{ secrets.KEYS }}
+        run: |
           python main.py
         timeout-minutes: 340
         continue-on-error: true
 
   looper:
-    name: Run QuizBot loop
-    needs: [quizbot]
+    name: Run Bot Loop
+    needs: [mcq-extractor-bot]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Set Git Configs & Secrets
+      - name: Set Git Configs
         run: |
           git config --global user.email "${{ env.mail }}"
           git config --global user.name "${{ env.username }}"
           git config --global pull.rebase false
-          git config --global credential.helper store
-          echo "https://${{ env.username }}:${{ secrets.GH_TOKEN }}@github.com" > ~/.git-credentials
 
-      - name: Create an empty commit
+      - name: Create an empty commit to re-trigger workflow
         run: |
-          git clone https://${{ secrets.GH_TOKEN }}@github.com/${GITHUB_REPOSITORY} temp
-          cd temp
-          git commit --allow-empty -m "[LOOP] Re-run XenonCI workflow"
-          git push
+          git pull
+          git commit --allow-empty -m "[LOOP] Re-run PDF MCQ Extractor Bot workflow - $(date '+%Y-%m-%d %H:%M:%S')"
+          git push https://${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}
+        continue-on-error: true
