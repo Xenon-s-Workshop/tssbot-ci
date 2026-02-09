@@ -32,7 +32,7 @@ class Config:
     MAX_QUEUE_SIZE = 10  # Maximum number of tasks in queue
     
     # Gemini Model Configuration
-    GEMINI_MODEL = "gemini-2.0-flash-exp"  # Latest Gemini 2.0 Flash (experimental)
+    GEMINI_MODEL = "gemini-2.5-flash"  # Latest Gemini 2.0 Flash (experimental)
     # Alternative models:
     # "gemini-2.0-flash" - Stable Gemini 2.0 Flash (when available)
     # "gemini-1.5-flash" - Previous generation
