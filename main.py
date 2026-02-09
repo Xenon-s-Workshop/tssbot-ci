@@ -33,7 +33,7 @@ class Config:
     OUTPUT_DIR = Path("output")
     MAX_CONCURRENT_IMAGES = 5
     MAX_QUEUE_SIZE = 10
-    GEMINI_MODEL = "gemini-2.0-flash-exp"
+    GEMINI_MODEL = "gemini-2.0-flash"
     
     # Rate limiting configuration
     POLL_DELAY = 3  # Delay between polls in seconds
