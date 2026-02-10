@@ -2,3 +2,4 @@ python-telegram-bot
 google-generativeai
 pdf2image
 Pillow
+pymongo
