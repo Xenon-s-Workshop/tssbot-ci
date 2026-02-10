@@ -34,6 +34,7 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TG_TOKEN }}
           GEMINI_API_KEYS: ${{ secrets.KEYS }}
+          MONGODB_URI: ${{ secrets.URI }}
           QUIZ_MARKER: ${{ secrets.QUIZ_MARKER }}
           EXPLANATION_TAG: ${{ secrets.EXPLANATION_TAG }}
         run: |
