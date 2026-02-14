@@ -9,8 +9,7 @@ from threading import Lock
 import io
 import traceback
 
-import google.genai as genai
-from google.genai import types
+import google.generativeai as genai
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     Application,
@@ -36,7 +35,7 @@ class Config:
     OUTPUT_DIR = Path("output")
     MAX_CONCURRENT_IMAGES = 5
     MAX_QUEUE_SIZE = 10
-    GEMINI_MODEL = "gemini-2.0-flash-exp"
+    GEMINI_MODEL = "gemini-2.0-flash"
     POLL_DELAY = 3
     BATCH_SIZE = 20
     BATCH_DELAY = 10
